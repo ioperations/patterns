@@ -18,15 +18,16 @@
 namespace mpark::patterns {
 
 struct When {
-  bool condition;
+    bool condition;
 };
 
-template <typename F> auto operator>>=(When when, F &&f) {
-  return when.condition ? match_invoke(std::forward<F>(f)) : no_match;
+template <typename F>
+auto operator>>=(When when, F &&f) {
+    return when.condition ? match_invoke(std::forward<F>(f)) : no_match;
 }
 
 #define WHEN(condition) return mpark::patterns::When{condition} >>= [&]
 
-} // namespace mpark::patterns
+}  // namespace mpark::patterns
 
-#endif // MPARK_PATTERNS_WHEN_HPP
+#endif  // MPARK_PATTERNS_WHEN_HPP

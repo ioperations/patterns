@@ -15,13 +15,14 @@
 
 namespace mpark::patterns {
 
-template <typename... Patterns> struct Anyof {
-  std::tuple<const Patterns &...> patterns;
+template <typename... Patterns>
+struct Anyof {
+    std::tuple<const Patterns &...> patterns;
 };
 
 template <typename... Patterns>
 auto anyof(const Patterns &...patterns) noexcept {
-  return Anyof<Patterns...>{std::tie(patterns...)};
+    return Anyof<Patterns...>{std::tie(patterns...)};
 }
 
 namespace detail {
@@ -29,38 +30,39 @@ namespace detail {
 template <typename... Patterns, typename Value, typename F, std::size_t I>
 auto try_match_impl(const Anyof<Patterns...> &anyof, Value &&value, F &&f,
                     std::index_sequence<I>) {
-  return try_match(std::get<I>(anyof.patterns), std::forward<Value>(value),
-                   [&](auto &&...args) {
-                     return match_invoke(std::forward<F>(f),
-                                         std::forward<decltype(args)>(args)...);
-                   });
+    return try_match(std::get<I>(anyof.patterns), std::forward<Value>(value),
+                     [&](auto &&...args) {
+                         return match_invoke(
+                             std::forward<F>(f),
+                             std::forward<decltype(args)>(args)...);
+                     });
 }
 
 template <typename... Patterns, typename Value, typename F, std::size_t I,
           std::size_t J, std::size_t... Js>
 auto try_match_impl(const Anyof<Patterns...> &anyof, Value &&value, F &&f,
                     std::index_sequence<I, J, Js...>) {
-  auto result =
-      try_match(std::get<I>(anyof.patterns), std::forward<Value>(value),
-                [&](auto &&...args) {
-                  return match_invoke(std::forward<F>(f),
-                                      std::forward<decltype(args)>(args)...);
-                });
-  return result ? std::move(result)
-                : try_match_impl(anyof, std::forward<Value>(value),
-                                 std::forward<F>(f),
-                                 std::index_sequence<J, Js...>{});
+    auto result = try_match(std::get<I>(anyof.patterns),
+                            std::forward<Value>(value), [&](auto &&...args) {
+                                return match_invoke(
+                                    std::forward<F>(f),
+                                    std::forward<decltype(args)>(args)...);
+                            });
+    return result ? std::move(result)
+                  : try_match_impl(anyof, std::forward<Value>(value),
+                                   std::forward<F>(f),
+                                   std::index_sequence<J, Js...>{});
 }
 
-} // namespace detail
+}  // namespace detail
 
 template <typename... Patterns, typename Value, typename F>
 auto try_match(const Anyof<Patterns...> &anyof, Value &&value, F &&f) {
-  return detail::try_match_impl(anyof, std::forward<Value>(value),
-                                std::forward<F>(f),
-                                std::index_sequence_for<Patterns...>{});
+    return detail::try_match_impl(anyof, std::forward<Value>(value),
+                                  std::forward<F>(f),
+                                  std::index_sequence_for<Patterns...>{});
 }
 
-} // namespace mpark::patterns
+}  // namespace mpark::patterns
 
-#endif // MPARK_PATTERNS_ANYOF_HPP
+#endif  // MPARK_PATTERNS_ANYOF_HPP

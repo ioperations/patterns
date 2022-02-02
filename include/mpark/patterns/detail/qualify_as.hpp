@@ -12,7 +12,8 @@
 
 namespace mpark::patterns::detail {
 
-template <typename T, typename U> struct qualify_as : lib::identity<T> {};
+template <typename T, typename U>
+struct qualify_as : lib::identity<T> {};
 
 template <typename T, typename U>
 using qualify_as_t = typename qualify_as<T, U>::type;
@@ -34,6 +35,6 @@ template <typename T, typename U>
 struct qualify_as<T, const U volatile>
     : lib::identity<const qualify_as_t<T, U> volatile> {};
 
-} // namespace mpark::patterns::detail
+}  // namespace mpark::patterns::detail
 
-#endif // MPARK_PATTERNS_DETAIL_QUALIFY_AS_HPP
+#endif  // MPARK_PATTERNS_DETAIL_QUALIFY_AS_HPP

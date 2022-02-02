@@ -18,4 +18,4 @@
 #include "patterns/vis.hpp"
 #include "patterns/when.hpp"
 
-#endif // MPARK_PATTERNS_HPP
+#endif  // MPARK_PATTERNS_HPP

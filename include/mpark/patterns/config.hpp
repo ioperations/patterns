@@ -17,9 +17,9 @@
 #define __has_feature(x) 0
 #endif
 
-#if __has_feature(cxx_exceptions) || defined(__cpp_exceptions) ||              \
+#if __has_feature(cxx_exceptions) || defined(__cpp_exceptions) || \
     (defined(_MSC_VER) && defined(_CPPUNWIND))
 #define MPARK_PATTERNS_EXCEPTIONS
 #endif
 
-#endif // MPARK_PATTERNS_CONFIG_HPP
+#endif  // MPARK_PATTERNS_CONFIG_HPP

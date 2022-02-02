@@ -14,23 +14,27 @@
 
 namespace mpark::patterns {
 
-template <typename Pattern> struct Vis { const Pattern &pattern; };
+template <typename Pattern>
+struct Vis {
+    const Pattern &pattern;
+};
 
-template <typename Pattern> auto vis(const Pattern &pattern) noexcept {
-  return Vis<Pattern>{pattern};
+template <typename Pattern>
+auto vis(const Pattern &pattern) noexcept {
+    return Vis<Pattern>{pattern};
 }
 
 template <typename Pattern, typename Value, typename F>
 auto try_match(const Vis<Pattern> &vis, Value &&value, F &&f) {
-  using std::visit;
-  return visit(
-      [&](auto &&v) {
-        return try_match(vis.pattern, std::forward<decltype(v)>(v),
-                         std::forward<F>(f));
-      },
-      std::forward<Value>(value));
+    using std::visit;
+    return visit(
+        [&](auto &&v) {
+            return try_match(vis.pattern, std::forward<decltype(v)>(v),
+                             std::forward<F>(f));
+        },
+        std::forward<Value>(value));
 }
 
-} // namespace mpark::patterns
+}  // namespace mpark::patterns
 
-#endif // MPARK_PATTERNS_VIS_HPP
+#endif  // MPARK_PATTERNS_VIS_HPP
