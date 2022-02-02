@@ -27,3 +27,8 @@
 *.exe
 *.out
 *.app
+
+.ccls-cache
+.cache
+build
+compile_commands.json

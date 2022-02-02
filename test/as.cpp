@@ -3,18 +3,20 @@
 // Copyright Michael Park, 2017
 //
 // Distributed under the Boost Software License, Version 1.0.
-// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+// (See accompanying file LICENSE.md or copy at
+// http://boost.org/LICENSE_1_0.txt)
 
-#include <mpark/patterns.hpp>
+#include <gtest/gtest.h>
 
 #include <any>
+#include <mpark/patterns.hpp>
 #include <string>
 #include <variant>
 #include <vector>
 
-#include <gtest/gtest.h>
-
-struct Shape { virtual ~Shape() = default; };
+struct Shape {
+  virtual ~Shape() = default;
+};
 
 struct Circle : Shape {};
 struct Square : Shape {};
@@ -22,11 +24,12 @@ struct Triangle : Shape {};
 
 TEST(As, Polymorphic_Reference) {
   Circle circle;
-  const Shape& shape = circle;
+  const Shape &shape = circle;
   using namespace mpark::patterns;
-  int result = match(shape)(pattern(as<Circle>(_)) = [] { return 1; },
-                            pattern(as<Square>(_)) = [] { return 2; },
-                            pattern(as<Triangle>(_)) = [] { return 3; });
+  int result = match(shape)(
+      pattern(as<Circle>(_)) = [] { return 1; },
+      pattern(as<Square>(_)) = [] { return 2; },
+      pattern(as<Triangle>(_)) = [] { return 3; });
 
   EXPECT_EQ(1, result);
 }
@@ -34,9 +37,10 @@ TEST(As, Polymorphic_Reference) {
 TEST(As, Polymorphic_Pointer) {
   std::unique_ptr<Shape> shape = std::make_unique<Circle>();
   using namespace mpark::patterns;
-  match(shape)(pattern(some(as<Circle>(_))) = [] { return 1; },
-               pattern(some(as<Square>(_))) = [] { return 2; },
-               pattern(some(as<Triangle>(_))) = [] { return 3; });
+  match(shape)(
+      pattern(some(as<Circle>(_))) = [] { return 1; },
+      pattern(some(as<Square>(_))) = [] { return 2; },
+      pattern(some(as<Triangle>(_))) = [] { return 3; });
 }
 
 TEST(As, Variant_Unary) {
@@ -56,22 +60,26 @@ TEST(As, Variant_Binary) {
     for (const auto &w : ws) {
       using namespace mpark::patterns;
       match(v, w)(
-          pattern(as<int>(arg), as<int>(arg)) = [](auto x, auto y) {
-            EXPECT_EQ(101, x);
-            EXPECT_EQ(202, y);
-          },
-          pattern(as<int>(arg), as<str>(arg)) = [](auto x, auto y) {
-            EXPECT_EQ(101, x);
-            EXPECT_EQ("world", y);
-          },
-          pattern(as<str>(arg), as<int>(arg)) = [](auto x, auto y) {
-            EXPECT_EQ("hello", x);
-            EXPECT_EQ(202, y);
-          },
-          pattern(as<str>(arg), as<str>(arg)) = [](auto x, auto y) {
-            EXPECT_EQ("hello", x);
-            EXPECT_EQ("world", y);
-          });
+          pattern(as<int>(arg), as<int>(arg)) =
+              [](auto x, auto y) {
+                EXPECT_EQ(101, x);
+                EXPECT_EQ(202, y);
+              },
+          pattern(as<int>(arg), as<str>(arg)) =
+              [](auto x, auto y) {
+                EXPECT_EQ(101, x);
+                EXPECT_EQ("world", y);
+              },
+          pattern(as<str>(arg), as<int>(arg)) =
+              [](auto x, auto y) {
+                EXPECT_EQ("hello", x);
+                EXPECT_EQ(202, y);
+              },
+          pattern(as<str>(arg), as<str>(arg)) =
+              [](auto x, auto y) {
+                EXPECT_EQ("hello", x);
+                EXPECT_EQ("world", y);
+              });
     }
   }
 }
@@ -85,4 +93,9 @@ TEST(As, Any) {
   match(a)(
       pattern(as<int>(arg)) = [](const auto &) { EXPECT_FALSE(true); },
       pattern(as<str>(arg)) = [](const auto &s) { EXPECT_EQ("hello", s); });
+}
+
+int main(int argc, char *argv[]) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

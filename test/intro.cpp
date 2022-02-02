@@ -3,12 +3,14 @@
 // Copyright Michael Park, 2017
 //
 // Distributed under the Boost Software License, Version 1.0.
-// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+// (See accompanying file LICENSE.md or copy at
+// http://boost.org/LICENSE_1_0.txt)
 
-#include <mpark/patterns.hpp>
+#include <gtest/gtest.h>
 
 #include <cassert>
 #include <iostream>
+#include <mpark/patterns.hpp>
 #include <optional>
 #include <string>
 #include <type_traits>
@@ -16,17 +18,16 @@
 #include <variant>
 #include <vector>
 
-#include <gtest/gtest.h>
-
 auto fizzbuzz_v1() {
   std::vector<std::variant<int, std::string>> result;
 
   using namespace mpark::patterns;
   for (int i = 1; i <= 100; ++i) {
-    match(i % 3, i % 5)(pattern(0, 0) = [&] { result.push_back("fizzbuzz"); },
-                        pattern(0, _) = [&] { result.push_back("fizz"); },
-                        pattern(_, 0) = [&] { result.push_back("buzz"); },
-                        pattern(_, _) = [&] { result.push_back(i); });
+    match(i % 3, i % 5)(
+        pattern(0, 0) = [&] { result.push_back("fizzbuzz"); },
+        pattern(0, _) = [&] { result.push_back("fizz"); },
+        pattern(_, 0) = [&] { result.push_back("buzz"); },
+        pattern(_, _) = [&] { result.push_back(i); });
   }
 
   return result;
@@ -40,7 +41,8 @@ auto fizzbuzz_v2() {
     IDENTIFIERS(x);
     match(i)(
         pattern(_).when(_ % 15 == 0) = [&] { result.push_back("fizzbuzz"); },
-        pattern(arg).when(arg % 3 == 0) = [&](auto) { result.push_back("fizz"); },
+        pattern(arg).when(arg % 3 ==
+                          0) = [&](auto) { result.push_back("fizz"); },
         pattern(x).when(x % 5 == 0) = [&](auto) { result.push_back("buzz"); },
         pattern(x) = [&](auto x) { result.push_back(x); });
   }
@@ -50,16 +52,16 @@ auto fizzbuzz_v2() {
 
 int factorial(int n) {
   using namespace mpark::patterns;
-  return match(n)(pattern(0) = [] { return 1; },
-                  pattern(arg) = [](int n) { return n * factorial(n - 1); });
+  return match(n)(
+      pattern(0) = [] { return 1; },
+      pattern(arg) = [](int n) { return n * factorial(n - 1); });
 }
 
 int fib_v0(int n) {
   using namespace mpark::patterns;
   assert(n >= 0);
   return match(n)(
-      pattern(0) = [] { return 0; },
-      pattern(1) = [] { return 1; },
+      pattern(0) = [] { return 0; }, pattern(1) = [] { return 1; },
       pattern(arg) = [](int n) { return fib_v0(n - 1) + fib_v0(n - 2); });
 }
 
@@ -80,9 +82,7 @@ int fib_v2(int n) {
       pattern(arg) = [](int n) { return fib_v2(n - 1) + fib_v2(n - 2); });
 }
 
-TEST(Intro, Fizzbuzz) {
-  EXPECT_EQ(fizzbuzz_v1(), fizzbuzz_v2());
-}
+TEST(Intro, Fizzbuzz) { EXPECT_EQ(fizzbuzz_v1(), fizzbuzz_v2()); }
 
 TEST(Intro, Factorial) {
   EXPECT_EQ(120, factorial(5));

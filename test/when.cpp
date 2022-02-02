@@ -3,22 +3,23 @@
 // Copyright Michael Park, 2017
 //
 // Distributed under the Boost Software License, Version 1.0.
-// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
-
-#include <mpark/patterns.hpp>
-
-#include <array>
+// (See accompanying file LICENSE.md or copy at
+// http://boost.org/LICENSE_1_0.txt)
 
 #include <gtest/gtest.h>
+
+#include <array>
+#include <mpark/patterns.hpp>
 
 TEST(When, SubscriptOperatorToBool) {
   std::array<bool, 3> xs = {{false, false, true}};
 
   using namespace mpark::patterns;
   IDENTIFIERS(_x);
-  int result = match(xs)(pattern(ds(_x, _, _)).when(_x) = [] { return 0; },
-                         pattern(ds(_, _x, _)).when(_x) = [] { return 1; },
-                         pattern(ds(_, _, _x)).when(_x) = [] { return 2; });
+  int result = match(xs)(
+      pattern(ds(_x, _, _)).when(_x) = [] { return 0; },
+      pattern(ds(_, _x, _)).when(_x) = [] { return 1; },
+      pattern(ds(_, _, _x)).when(_x) = [] { return 2; });
 
   EXPECT_EQ(2, result);
 }
@@ -27,9 +28,10 @@ TEST(When, SubscriptOperator) {
   std::array<int, 3> xs = {{1, 2, 3}};
 
   using namespace mpark::patterns;
-  int result = match(xs)(pattern(_).when(_[0] == 1) = [] { return 0; },
-                         pattern(_).when(_[1] == 1) = [] { return 1; },
-                         pattern(_).when(_[2] == 1) = [] { return 2; });
+  int result = match(xs)(
+      pattern(_).when(_[0] == 1) = [] { return 0; },
+      pattern(_).when(_[1] == 1) = [] { return 1; },
+      pattern(_).when(_[2] == 1) = [] { return 2; });
 
   EXPECT_EQ(0, result);
 }
@@ -39,9 +41,10 @@ TEST(When, CallOperator_Guard) {
       {[] { return 0; }, [] { return 1; }, [] { return 2; }}};
 
   using namespace mpark::patterns;
-  int result = match(xs)(pattern(_).when(_[0]() == 1) = [] { return 0; },
-                         pattern(_).when(_[1]() == 1) = [] { return 1; },
-                         pattern(_).when(_[2]() == 1) = [] { return 2; });
+  int result = match(xs)(
+      pattern(_).when(_[0]() == 1) = [] { return 0; },
+      pattern(_).when(_[1]() == 1) = [] { return 1; },
+      pattern(_).when(_[2]() == 1) = [] { return 2; });
 
   EXPECT_EQ(1, result);
 }

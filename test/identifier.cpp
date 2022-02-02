@@ -3,14 +3,14 @@
 // Copyright Michael Park, 2017
 //
 // Distributed under the Boost Software License, Version 1.0.
-// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
-
-#include <mpark/patterns.hpp>
-
-#include <optional>
-#include <tuple>
+// (See accompanying file LICENSE.md or copy at
+// http://boost.org/LICENSE_1_0.txt)
 
 #include <gtest/gtest.h>
+
+#include <mpark/patterns.hpp>
+#include <optional>
+#include <tuple>
 
 TEST(Identifier, Simple) {
   std::tuple<int, int, int> t = {101, 202, 101};
@@ -47,10 +47,10 @@ TEST(Identifier, Discards) {
   using namespace mpark::patterns;
   IDENTIFIERS(x, _y, z);
   int actual = match(t, o)(
-      pattern(ds(x , x , x ), some(x )) = [](auto &&) { return 1; },
-      pattern(ds(x , _y, _y), some(x )) = [](auto &&) { return 2; },
-      pattern(ds(x , _y, x ), some(_y)) = [](auto &&) { return 3; },
-      pattern(ds(_y, _y, x ), some(z )) = [](auto &&, auto &&) { return 4; });
+      pattern(ds(x, x, x), some(x)) = [](auto &&) { return 1; },
+      pattern(ds(x, _y, _y), some(x)) = [](auto &&) { return 2; },
+      pattern(ds(x, _y, x), some(_y)) = [](auto &&) { return 3; },
+      pattern(ds(_y, _y, x), some(z)) = [](auto &&, auto &&) { return 4; });
 
   EXPECT_EQ(3, actual);
 }

@@ -3,20 +3,20 @@
 // Copyright Michael Park, 2017
 //
 // Distributed under the Boost Software License, Version 1.0.
-// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
-
-#include <mpark/patterns.hpp>
-
-#include <optional>
+// (See accompanying file LICENSE.md or copy at
+// http://boost.org/LICENSE_1_0.txt)
 
 #include <gtest/gtest.h>
+
+#include <mpark/patterns.hpp>
+#include <optional>
 
 TEST(Let, If) {
   std::optional<int> expected = 42;
   std::optional<int> actual;
 
   using namespace mpark::patterns;
-  if_let (pattern(some(arg)) = expected) = [&](auto x) { actual = x; };
+  if_let(pattern(some(arg)) = expected) = [&](auto x) { actual = x; };
 
   EXPECT_EQ(expected, actual);
 }
@@ -28,7 +28,7 @@ TEST(Let, For) {
   std::vector<int> actual;
 
   using namespace mpark::patterns;
-  for_let (pattern(ds(1, arg)) = pairs) = [&](auto x) { actual.push_back(x); };
+  for_let(pattern(ds(1, arg)) = pairs) = [&](auto x) { actual.push_back(x); };
 
   EXPECT_EQ(expected, actual);
 }
@@ -40,8 +40,10 @@ TEST(Let, ForBreak) {
   std::vector<int> actual;
 
   using namespace mpark::patterns;
-  for_let (pattern(ds(1, arg)) = pairs) = [&](auto x) {
-    if (x == 1) { return Break; }
+  for_let(pattern(ds(1, arg)) = pairs) = [&](auto x) {
+    if (x == 1) {
+      return Break;
+    }
     actual.push_back(x);
     return Continue;
   };
@@ -56,8 +58,10 @@ TEST(Let, ForContinue) {
   std::vector<int> actual;
 
   using namespace mpark::patterns;
-  for_let (pattern(ds(1, arg)) = pairs) = [&](auto x) {
-    if (x == 0) { return Continue; }
+  for_let(pattern(ds(1, arg)) = pairs) = [&](auto x) {
+    if (x == 0) {
+      return Continue;
+    }
     actual.push_back(x);
     return Continue;
   };

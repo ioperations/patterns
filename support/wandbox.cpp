@@ -3,10 +3,10 @@
 // Copyright Michael Park, 2017
 //
 // Distributed under the Boost Software License, Version 1.0.
-// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+// (See accompanying file LICENSE.md or copy at
+// http://boost.org/LICENSE_1_0.txt)
 
 #include <cstdio>
-
 #include <mpark/patterns.hpp>
 
 void fizzbuzz() {
@@ -20,6 +20,4 @@ void fizzbuzz() {
   }
 }
 
-int main() {
-  fizzbuzz();
-}
+int main() { fizzbuzz(); }

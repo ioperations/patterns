@@ -3,23 +3,23 @@
 // Copyright Michael Park, 2017
 //
 // Distributed under the Boost Software License, Version 1.0.
-// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
-
-#include <mpark/patterns.hpp>
-
-#include <array>
-#include <string>
-#include <utility>
+// (See accompanying file LICENSE.md or copy at
+// http://boost.org/LICENSE_1_0.txt)
 
 #include <gtest/gtest.h>
+
+#include <array>
+#include <mpark/patterns.hpp>
+#include <string>
+#include <utility>
 
 TEST(Array, CStyle_LRef) {
   int xs[3] = {1, 2, 3};
 
   using namespace mpark::patterns;
-  int &result =
-      match(xs)(pattern(ds(3, 2, arg)) = [](int &x) -> int & { return x; },
-                pattern(ds(arg, 2, 3)) = [](int &x) -> int & { return x; });
+  int &result = match(xs)(
+      pattern(ds(3, 2, arg)) = [](int &x) -> int & { return x; },
+      pattern(ds(arg, 2, 3)) = [](int &x) -> int & { return x; });
 
   EXPECT_EQ(xs[0], result);
   EXPECT_EQ(&xs[0], &result);
@@ -56,10 +56,10 @@ TEST(Array, Std_LRef) {
       pattern(ds("z", "y", arg)) = [](std::string &s) -> std::string & {
         return s;
       },
-      pattern(ds(arg,  _ , "z")) = [](std::string &s) -> std::string & {
+      pattern(ds(arg, _, "z")) = [](std::string &s) -> std::string & {
         return s;
       },
-      pattern(ds(arg, "y",  _ )) = [](std::string &s) -> std::string & {
+      pattern(ds(arg, "y", _)) = [](std::string &s) -> std::string & {
         return s;
       });
 
@@ -72,15 +72,12 @@ TEST(Array, Std_ConstLRef) {
 
   using namespace mpark::patterns;
   const std::string &result = match(xs)(
-      pattern(ds("z", "y", arg)) = [](const std::string &s) -> const auto & {
-        return s;
-      },
-      pattern(ds(arg, _, "z")) = [](const std::string &s) -> const auto & {
-        return s;
-      },
-      pattern(ds(arg, "y", _)) = [](const std::string &s) -> const auto & {
-        return s;
-      });
+      pattern(ds("z", "y", arg)) =
+          [](const std::string &s) -> const auto & { return s; },
+      pattern(ds(arg, _, "z")) =
+          [](const std::string &s) -> const auto & { return s; },
+      pattern(ds(arg, "y", _)) =
+          [](const std::string &s) -> const auto & { return s; });
 
   EXPECT_EQ(xs[0], result);
   EXPECT_EQ(&xs[0], &result);
@@ -94,12 +91,17 @@ TEST(Array, Std_RRef) {
       pattern(ds("z", "y", arg)) = [](std::string &&s) -> std::string {
         return std::move(s);
       },
-      pattern(ds(arg,  _ , "z")) = [](std::string &&s) -> std::string {
+      pattern(ds(arg, _, "z")) = [](std::string &&s) -> std::string {
         return std::move(s);
       },
-      pattern(ds(arg, "y",  _ )) = [](std::string &&s) -> std::string {
+      pattern(ds(arg, "y", _)) = [](std::string &&s) -> std::string {
         return std::move(s);
       });
 
   EXPECT_EQ("x", result);
+}
+
+int main(int argc, char *argv[]) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
